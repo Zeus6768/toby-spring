@@ -1,6 +1,5 @@
 # 토비의 스프링 3.1 정리
 - 개인적으로 공부를 위해 만든 저장소입니다. 
-  
 
 ## 환경설정
 - [AcornPublishing/toby-spring3-1](https://github.com/AcornPublishing/toby-spring3-1)의 강의자료를 사용했습니다.
@@ -9,6 +8,7 @@
 - MySQL을 설치하고 강의자료를 이용해 springbook이라는 DB를 만들었습니다. 
   - 책에서 MySQL5 버전을 사용하지만 제 환경에서는 8버전이 이미 설치되어 있어 여기에 맞춰 사용했습니다. 
   - 강의자료의 SQL문에서 사용자 'spring'을 추가하는 문법에서 오류가 발생해 8버전에 맞게 고쳐 실행했습니다. 
+- 테스트 환경으로 JUnit5 프레임워크를 사용했습니다. 
 
 ## 목차
 [1장 오브젝트와 의존관계](markdown/vol-1-chatper-1.md)

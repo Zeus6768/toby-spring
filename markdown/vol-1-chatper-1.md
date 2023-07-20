@@ -118,3 +118,84 @@ public class UserDao {
     }
 }
 ```
+
+## 1.3.3 main()을 이용한 DAO 테스트 코드
+- 책에서는 `public static main()` 메소드를 직접 만드는 내용이 있으나, JUnit5로 대신했습니다.
+- 다음의 코드를 사용합니다.
+
+```java
+package springbook.user.domain;
+
+import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+
+class UserDaoTest {
+
+    @Test
+    void addAndGet() throws SQLException, ClassNotFoundException {
+
+        UserDao dao = new UserDao();
+
+        User user = new User();
+        user.setId("whiteship");
+        user.setName("백기선");
+        user.setPassword("married");
+
+        dao.add(user);
+
+        System.out.println(user.getId() + " 등록 성공");
+
+        User user2 = dao.get(user.getId());
+        System.out.println(user2.getName());
+        System.out.println(user2.getPassword());
+        System.out.println(user2.getId() + " 조회 성공");
+    }
+}
+```
+
+그러나 다음과 같은 오류가 발생합니다. 
+
+```
+java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
+```
+
+MySQL8 버전에 맞는 JDBC 드라이버를 다운로드해 프로젝트에 추가해봐도 소용이 없었습니다. 
+
+그러던 중 JDBC 4.0부터는 `Class.forName()`을 사용하지 않아도 된다는 정보를 발견합니다. [출처](https://docs.oracle.com/javadb/10.8.3.0/ref/rrefjdbc4_0summary.html)
+
+```
+Autoloading of JDBC drivers. In earlier versions of JDBC, applications had to manually register drivers before requesting Connections. With JDBC 4.0, applications no longer need to issue a Class.forName() on the driver name; instead, the DriverManager will find an appropriate JDBC driver when the application requests a Connection.
+```
+
+UserDao로 이동해 `add()`, `get()` 메소드의 `Class.forName()`을 삭제합니다.
+
+이번엔 다음과 같은 오류가 발생합니다.
+
+```
+java.sql.SQLException: No suitable driver found for jdbc:mysql://localhost/springbook
+```
+
+당연합니다. JDBC 드라이버가 없으니까요. 
+
+`pom.xml`에 의존성을 추가합니다. 제 PC의 MySQL 버전은 8.0.30 입니다. 
+
+```xml
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.30</version>
+</dependency>
+```
+
+다시 테스트를 실행하면 성공합니다.  
+
+```markdown
+whiteship 등록 성공
+백기선
+married
+whiteship 조회 성공
+
+Process finished with exit code 0
+```
+
